@@ -104,12 +104,12 @@ export default function CartPage() {
       </div>
       <div className="mt-8 text-right">
         <p className="text-xl font-bold">Total: ${total.toFixed(2)}</p>
-        <button
-          onClick={() => alert('Checkout functionality coming soon!')}
-          className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+        <Link
+          href="/checkout"
+          className="mt-4 bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 inline-block"
         >
-          Proceed to Checkout
-        </button>
+          Sepeti Onayla
+        </Link>
       </div>
     </div>
   );

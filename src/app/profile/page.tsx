@@ -5,6 +5,7 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import AddressList from '@/components/AddressList';
 
 interface User {
   id: string;
@@ -340,25 +341,7 @@ export default function ProfilePage() {
 
               {/* Addresses Tab */}
               {activeTab === 'addresses' && (
-                <div>
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-4 md:mb-0">Kayıtlı Adreslerim</h3>
-                    <button className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                      Yeni Adres Ekle
-                    </button>
-                  </div>
-                  
-                  <div className="text-center py-12">
-                    <div className="w-24 h-24 mx-auto mb-4 text-gray-400">
-                      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                    </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">Henüz kayıtlı adresiniz yok</h3>
-                    <p className="text-gray-600 mb-6">Hızlı teslimat için adres bilgilerinizi ekleyebilirsiniz.</p>
-                  </div>
-                </div>
+                <AddressList />
               )}
             </div>
           </div>

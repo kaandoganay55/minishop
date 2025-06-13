@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useReducer, useEffect, ReactNode } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 
 export interface CartItem {
   _id: string;
@@ -151,27 +153,48 @@ const initialState: CartState = {
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
+  const { data: session, status } = useSession();
+  const router = useRouter();
 
-  // Load cart from localStorage on mount
+  // Load cart from localStorage on mount (only if authenticated)
   useEffect(() => {
-    const savedCart = localStorage.getItem('shopping-cart');
-    if (savedCart) {
-      try {
-        const cartItems = JSON.parse(savedCart);
-        dispatch({ type: 'LOAD_CART', payload: cartItems });
-      } catch (error) {
-        console.error('Error loading cart from localStorage:', error);
+    if (session) {
+      const savedCart = localStorage.getItem('shopping-cart');
+      if (savedCart) {
+        try {
+          const cartItems = JSON.parse(savedCart);
+          dispatch({ type: 'LOAD_CART', payload: cartItems });
+        } catch (error) {
+          console.error('Error loading cart from localStorage:', error);
+        }
       }
+    } else {
+      // Clear cart if user is not authenticated
+      dispatch({ type: 'CLEAR_CART' });
     }
-  }, []);
+  }, [session]);
 
-  // Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever it changes (only if authenticated)
   useEffect(() => {
-    localStorage.setItem('shopping-cart', JSON.stringify(state.items));
-  }, [state.items]);
+    if (session) {
+      localStorage.setItem('shopping-cart', JSON.stringify(state.items));
+    }
+  }, [state.items, session]);
 
   const addItem = (item: Omit<CartItem, 'quantity'>) => {
-    dispatch({ type: 'ADD_ITEM', payload: item });
+    // Check if user is authenticated
+    if (!session && status !== 'loading') {
+      // Redirect to login page with return URL and message
+      const currentPath = window.location.pathname;
+      const loginUrl = `/login?message=${encodeURIComponent('Sepete ürün eklemek için giriş yapmalısınız')}&callbackUrl=${encodeURIComponent(currentPath)}`;
+      router.push(loginUrl);
+      return;
+    }
+
+    // Only add to cart if user is authenticated
+    if (session) {
+      dispatch({ type: 'ADD_ITEM', payload: item });
+    }
   };
 
   const removeItem = (id: string) => {

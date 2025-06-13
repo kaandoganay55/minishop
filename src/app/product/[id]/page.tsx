@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
+import ReviewsList from '@/components/ReviewsList';
 
 interface Product {
   _id: string;
@@ -388,6 +389,11 @@ export default function ProductPage({ params }: { params: Promise<{ id: string }
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Reviews Section */}
+      <div className="mt-16">
+        <ReviewsList productId={product._id} productName={product.name} />
       </div>
 
       {/* Related Products */}
